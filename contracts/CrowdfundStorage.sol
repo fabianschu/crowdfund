@@ -26,15 +26,11 @@ interface ICrowdfundFactory {
  */
 contract CrowdfundStorage {
     // The two states that this contract can exist in. "FUNDING" allows
-    // contributors to add funds, and "TRADING" allows the operator to sell the NFT.
+    // contributors to add funds.
     enum Status {FUNDING, TRADING}
 
     // ============ Constants ============
 
-    // Returned by the hook that is invoked when an ERC721 token is sent to this address.
-    bytes4 internal constant ERC721_RECEIVED_RETURN = 0x150b7a02;
-    // To check that the given media address represents an ERC721 contract.
-    bytes4 internal constant NFT_INTERFACE_ID = 0x80ac58cd;
     // The factor by which ETH contributions will multiply into crowdfund tokens.
     uint16 internal constant TOKEN_SCALE = 1000;
     uint256 internal constant REENTRANCY_NOT_ENTERED = 1;
@@ -45,10 +41,6 @@ contract CrowdfundStorage {
 
     // The operator has a special role to control NFT sale and change contract status.
     address payable public operator;
-    // An NFT contract address that represents the media that will eventually be traded.
-    address public mediaAddress;
-    // Address of WETH contract. We expect payment to come in as WETH, which we will unwrap.
-    address public WETH;
     // We add a hard cap to prevent raising more funds than deemed reasonable.
     uint256 public fundingCap;
     // The operator takes some equity in the tokens, represented by this percent.

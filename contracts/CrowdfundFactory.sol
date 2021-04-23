@@ -30,8 +30,6 @@ contract CrowdfundFactory {
     //======== Immutable storage =========
 
     address public immutable logic;
-    address public immutable wethAddress;
-    address public immutable mediaAddress;
 
     //======== Mutable storage =========
 
@@ -40,14 +38,8 @@ contract CrowdfundFactory {
 
     //======== Constructor =========
 
-    constructor(
-        address logic_,
-        address mediaAddress_,
-        address wethAddress_
-    ) {
+    constructor(address logic_) {
         logic = logic_;
-        mediaAddress = mediaAddress_;
-        wethAddress = wethAddress_;
     }
 
     //======== Deploy function =========

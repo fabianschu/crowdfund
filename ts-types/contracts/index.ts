@@ -3,7 +3,6 @@
 /* eslint-disable */
 export type { CrowdfundFactory } from "./CrowdfundFactory";
 export type { CrowdfundLogic } from "./CrowdfundLogic";
-export type { IWETHMinimal } from "./IWETHMinimal";
 export type { CrowdfundProxy } from "./CrowdfundProxy";
 export type { ICrowdfundFactory } from "./ICrowdfundFactory";
 export type { CrowdfundStorage } from "./CrowdfundStorage";
@@ -12,7 +11,6 @@ export type { WETH } from "./WETH";
 
 export { CrowdfundFactory__factory } from "./factories/CrowdfundFactory__factory";
 export { CrowdfundLogic__factory } from "./factories/CrowdfundLogic__factory";
-export { IWETHMinimal__factory } from "./factories/IWETHMinimal__factory";
 export { CrowdfundProxy__factory } from "./factories/CrowdfundProxy__factory";
 export { ICrowdfundFactory__factory } from "./factories/ICrowdfundFactory__factory";
 export { CrowdfundStorage__factory } from "./factories/CrowdfundStorage__factory";

@@ -21,13 +21,11 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface CrowdfundStorageInterface extends ethers.utils.Interface {
   functions: {
-    "WETH()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "fundingCap()": FunctionFragment;
     "logic()": FunctionFragment;
-    "mediaAddress()": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "operator()": FunctionFragment;
@@ -37,7 +35,6 @@ interface CrowdfundStorageInterface extends ethers.utils.Interface {
     "totalSupply()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
@@ -49,10 +46,6 @@ interface CrowdfundStorageInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "mediaAddress",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "operator", values?: undefined): string;
@@ -67,16 +60,11 @@ interface CrowdfundStorageInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "fundingCap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "mediaAddress",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "operator", data: BytesLike): Result;
@@ -108,10 +96,6 @@ export class CrowdfundStorage extends Contract {
   interface: CrowdfundStorageInterface;
 
   functions: {
-    WETH(overrides?: CallOverrides): Promise<[string]>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<[string]>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -142,10 +126,6 @@ export class CrowdfundStorage extends Contract {
     logic(overrides?: CallOverrides): Promise<[string]>;
 
     "logic()"(overrides?: CallOverrides): Promise<[string]>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<[string]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -179,10 +159,6 @@ export class CrowdfundStorage extends Contract {
     "totalSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
-  WETH(overrides?: CallOverrides): Promise<string>;
-
-  "WETH()"(overrides?: CallOverrides): Promise<string>;
-
   allowance(
     arg0: string,
     arg1: string,
@@ -213,10 +189,6 @@ export class CrowdfundStorage extends Contract {
   logic(overrides?: CallOverrides): Promise<string>;
 
   "logic()"(overrides?: CallOverrides): Promise<string>;
-
-  mediaAddress(overrides?: CallOverrides): Promise<string>;
-
-  "mediaAddress()"(overrides?: CallOverrides): Promise<string>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -250,10 +222,6 @@ export class CrowdfundStorage extends Contract {
   "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    WETH(overrides?: CallOverrides): Promise<string>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<string>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -284,10 +252,6 @@ export class CrowdfundStorage extends Contract {
     logic(overrides?: CallOverrides): Promise<string>;
 
     "logic()"(overrides?: CallOverrides): Promise<string>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<string>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<string>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -324,10 +288,6 @@ export class CrowdfundStorage extends Contract {
   filters: {};
 
   estimateGas: {
-    WETH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -358,10 +318,6 @@ export class CrowdfundStorage extends Contract {
     logic(overrides?: CallOverrides): Promise<BigNumber>;
 
     "logic()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -396,10 +352,6 @@ export class CrowdfundStorage extends Contract {
   };
 
   populateTransaction: {
-    WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -433,10 +385,6 @@ export class CrowdfundStorage extends Contract {
     logic(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "logic()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

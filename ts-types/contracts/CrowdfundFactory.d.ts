@@ -24,9 +24,7 @@ interface CrowdfundFactoryInterface extends ethers.utils.Interface {
   functions: {
     "createCrowdfund(string,string,address,uint256,uint256)": FunctionFragment;
     "logic()": FunctionFragment;
-    "mediaAddress()": FunctionFragment;
     "parameters()": FunctionFragment;
-    "wethAddress()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -35,15 +33,7 @@ interface CrowdfundFactoryInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "mediaAddress",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "parameters",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "wethAddress",
     values?: undefined
   ): string;
 
@@ -52,15 +42,7 @@ interface CrowdfundFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "mediaAddress",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "parameters", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "wethAddress",
-    data: BytesLike
-  ): Result;
 
   events: {
     "CrowdfundDeployed(address,string,string,address)": EventFragment;
@@ -105,10 +87,6 @@ export class CrowdfundFactory extends Contract {
 
     "logic()"(overrides?: CallOverrides): Promise<[string]>;
 
-    mediaAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<[string]>;
-
     parameters(
       overrides?: CallOverrides
     ): Promise<
@@ -132,10 +110,6 @@ export class CrowdfundFactory extends Contract {
         symbol: string;
       }
     >;
-
-    wethAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    "wethAddress()"(overrides?: CallOverrides): Promise<[string]>;
   };
 
   createCrowdfund(
@@ -159,10 +133,6 @@ export class CrowdfundFactory extends Contract {
   logic(overrides?: CallOverrides): Promise<string>;
 
   "logic()"(overrides?: CallOverrides): Promise<string>;
-
-  mediaAddress(overrides?: CallOverrides): Promise<string>;
-
-  "mediaAddress()"(overrides?: CallOverrides): Promise<string>;
 
   parameters(
     overrides?: CallOverrides
@@ -188,10 +158,6 @@ export class CrowdfundFactory extends Contract {
     }
   >;
 
-  wethAddress(overrides?: CallOverrides): Promise<string>;
-
-  "wethAddress()"(overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
     createCrowdfund(
       name_: string,
@@ -214,10 +180,6 @@ export class CrowdfundFactory extends Contract {
     logic(overrides?: CallOverrides): Promise<string>;
 
     "logic()"(overrides?: CallOverrides): Promise<string>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<string>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<string>;
 
     parameters(
       overrides?: CallOverrides
@@ -242,10 +204,6 @@ export class CrowdfundFactory extends Contract {
         symbol: string;
       }
     >;
-
-    wethAddress(overrides?: CallOverrides): Promise<string>;
-
-    "wethAddress()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -280,17 +238,9 @@ export class CrowdfundFactory extends Contract {
 
     "logic()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mediaAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     parameters(overrides?: CallOverrides): Promise<BigNumber>;
 
     "parameters()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    wethAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wethAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -316,16 +266,8 @@ export class CrowdfundFactory extends Contract {
 
     "logic()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    mediaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     parameters(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "parameters()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    wethAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "wethAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

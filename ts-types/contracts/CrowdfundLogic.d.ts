@@ -23,7 +23,6 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface CrowdfundLogicInterface extends ethers.utils.Interface {
   functions: {
-    "WETH()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -32,7 +31,6 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
     "decimals()": FunctionFragment;
     "fundingCap()": FunctionFragment;
     "logic()": FunctionFragment;
-    "mediaAddress()": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "operator()": FunctionFragment;
@@ -44,11 +42,9 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "unwrapWETH(uint256)": FunctionFragment;
     "valueToTokens(uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
@@ -72,10 +68,6 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "mediaAddress",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "operator", values?: undefined): string;
@@ -106,15 +98,10 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "unwrapWETH",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "valueToTokens",
     values: [BigNumberish]
   ): string;
 
-  decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -126,10 +113,6 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "fundingCap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "mediaAddress",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "operator", data: BytesLike): Result;
@@ -153,7 +136,6 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "unwrapWETH", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "valueToTokens",
     data: BytesLike
@@ -192,10 +174,6 @@ export class CrowdfundLogic extends Contract {
   interface: CrowdfundLogicInterface;
 
   functions: {
-    WETH(overrides?: CallOverrides): Promise<[string]>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<[string]>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -254,10 +232,6 @@ export class CrowdfundLogic extends Contract {
     logic(overrides?: CallOverrides): Promise<[string]>;
 
     "logic()"(overrides?: CallOverrides): Promise<[string]>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<[string]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -336,16 +310,6 @@ export class CrowdfundLogic extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    unwrapWETH(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "unwrapWETH(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     valueToTokens(
       value: BigNumberish,
       overrides?: CallOverrides
@@ -356,10 +320,6 @@ export class CrowdfundLogic extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { tokens: BigNumber }>;
   };
-
-  WETH(overrides?: CallOverrides): Promise<string>;
-
-  "WETH()"(overrides?: CallOverrides): Promise<string>;
 
   allowance(
     arg0: string,
@@ -419,10 +379,6 @@ export class CrowdfundLogic extends Contract {
   logic(overrides?: CallOverrides): Promise<string>;
 
   "logic()"(overrides?: CallOverrides): Promise<string>;
-
-  mediaAddress(overrides?: CallOverrides): Promise<string>;
-
-  "mediaAddress()"(overrides?: CallOverrides): Promise<string>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -501,16 +457,6 @@ export class CrowdfundLogic extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  unwrapWETH(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "unwrapWETH(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   valueToTokens(
     value: BigNumberish,
     overrides?: CallOverrides
@@ -522,10 +468,6 @@ export class CrowdfundLogic extends Contract {
   ): Promise<BigNumber>;
 
   callStatic: {
-    WETH(overrides?: CallOverrides): Promise<string>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<string>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -584,10 +526,6 @@ export class CrowdfundLogic extends Contract {
     logic(overrides?: CallOverrides): Promise<string>;
 
     "logic()"(overrides?: CallOverrides): Promise<string>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<string>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<string>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -663,13 +601,6 @@ export class CrowdfundLogic extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    unwrapWETH(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "unwrapWETH(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     valueToTokens(
       value: BigNumberish,
       overrides?: CallOverrides
@@ -702,10 +633,6 @@ export class CrowdfundLogic extends Contract {
   };
 
   estimateGas: {
-    WETH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -764,10 +691,6 @@ export class CrowdfundLogic extends Contract {
     logic(overrides?: CallOverrides): Promise<BigNumber>;
 
     "logic()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -846,13 +769,6 @@ export class CrowdfundLogic extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    unwrapWETH(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "unwrapWETH(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     valueToTokens(
       value: BigNumberish,
       overrides?: CallOverrides
@@ -865,10 +781,6 @@ export class CrowdfundLogic extends Contract {
   };
 
   populateTransaction: {
-    WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     allowance(
       arg0: string,
       arg1: string,
@@ -930,10 +842,6 @@ export class CrowdfundLogic extends Contract {
     logic(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "logic()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    mediaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "mediaAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1014,16 +922,6 @@ export class CrowdfundLogic extends Contract {
       from: string,
       to: string,
       value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    unwrapWETH(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "unwrapWETH(uint256)"(
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

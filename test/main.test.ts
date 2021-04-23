@@ -29,8 +29,6 @@ const TOKEN_SCALE = 1000;
 
 const STATUS_MAP = ["FUNDING", "TRADING"];
 
-let WETH: Contract;
-
 const { provider } = waffle;
 
 describe("Crowdfund via Proxy from Factory", () => {
@@ -53,11 +51,6 @@ describe("Crowdfund via Proxy from Factory", () => {
       fakeMediaContract,
       funder,
     ] = await ethers.getSigners();
-
-    mediaAddress = fakeMediaContract.address;
-
-    const WETHFactory = await ethers.getContractFactory("WETH");
-    WETH = await (await WETHFactory.deploy()).deployed();
   });
 
   describe("the crowdfund logic is deployed", () => {
@@ -80,18 +73,12 @@ describe("Crowdfund via Proxy from Factory", () => {
             "CrowdfundFactory"
           );
 
-          const deployment = await CrowdfundFactory.deploy(
-            logic.address,
-            mediaAddress,
-            WETH.address
-          );
+          const deployment = await CrowdfundFactory.deploy(logic.address);
           factory = await deployment.deployed();
         });
 
         it("has the correct references to other contracts", async () => {
           expect(await factory.logic()).to.eq(logic.address);
-          expect(await factory.wethAddress()).to.eq(WETH.address);
-          expect(await factory.mediaAddress()).to.eq(mediaAddress);
         });
 
         describe("and a proxy is created through the factory", () => {
@@ -172,8 +159,8 @@ describe("Crowdfund via Proxy from Factory", () => {
             expect(await callableProxy.operatorPercent()).to.eq("5");
           });
 
-          it("uses 556512 gas", () => {
-            expect(gasUsed.toString()).to.eq("556512");
+          it("uses 488175 gas", () => {
+            expect(gasUsed.toString()).to.eq("488175");
           });
 
           describe("#redeemableFromTokens", () => {
@@ -339,8 +326,8 @@ describe("Crowdfund via Proxy from Factory", () => {
               gasPrice = tx.gasPrice;
             });
 
-            it("uses 92442 gas", () => {
-              expect(gasUsed.toString()).to.eq("92442");
+            it("uses 92397 gas", () => {
+              expect(gasUsed.toString()).to.eq("92397");
             });
 
             it("increases the contract's balance by 2 ETH", async () => {
@@ -470,8 +457,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                 );
               });
 
-              it("uses 50469 gas", () => {
-                expect(gasUsed.toString()).to.eq("50469");
+              it("uses 50402 gas", () => {
+                expect(gasUsed.toString()).to.eq("50402");
               });
 
               it("emits a Transfer and Withdrawal event", async () => {
@@ -519,8 +506,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                   gasPrice = tx.gasPrice;
                 });
 
-                it("uses 58230 gas", () => {
-                  expect(gasUsed.toString()).to.eq("58230");
+                it("uses 58185 gas", () => {
+                  expect(gasUsed.toString()).to.eq("58185");
                 });
 
                 it("increases the contract's balance by 3.3 ETH", async () => {
@@ -679,8 +666,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                     );
                   });
 
-                  it("uses 50469 gas", () => {
-                    expect(gasUsed.toString()).to.eq("50469");
+                  it("uses 50402 gas", () => {
+                    expect(gasUsed.toString()).to.eq("50402");
                   });
 
                   it("emits a Transfer and Withdrawal event", async () => {
@@ -875,8 +862,8 @@ describe("Crowdfund via Proxy from Factory", () => {
               );
             });
 
-            it("uses 101891 gas", () => {
-              expect(receipt.gasUsed.toString()).to.eq("101891");
+            it("uses 101846 gas", () => {
+              expect(receipt.gasUsed.toString()).to.eq("101846");
             });
 
             describe("when a contributor adds ETH once the funding cap is already reached", () => {

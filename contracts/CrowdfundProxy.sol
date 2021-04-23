@@ -6,8 +6,6 @@ import {CrowdfundStorage} from "./CrowdfundStorage.sol";
 interface ICrowdfundFactory {
     function mediaAddress() external returns (address);
 
-    function wethAddress() external returns (address);
-
     function logic() external returns (address);
 
     // ERC20 data.
@@ -28,9 +26,6 @@ interface ICrowdfundFactory {
  */
 contract CrowdfundProxy is CrowdfundStorage {
     constructor() {
-        // Initialize immutable storage.
-        mediaAddress = ICrowdfundFactory(msg.sender).mediaAddress();
-        WETH = ICrowdfundFactory(msg.sender).wethAddress();
         logic = ICrowdfundFactory(msg.sender).logic();
         // Crowdfund-specific data.
         (

@@ -3,10 +3,6 @@ pragma solidity 0.8.4;
 
 import {CrowdfundStorage} from "./CrowdfundStorage.sol";
 
-interface IWETHMinimal {
-    function withdraw(uint256) external;
-}
-
 /**
  * @title CrowdfundLogic
  * @author MirrorXYZ
@@ -163,14 +159,6 @@ contract CrowdfundLogic is CrowdfundStorage {
 
     // ============ Utility Methods ============
 
-    /**
-     * @notice Anyone can unwrap WETH to ETH on this contract.
-     *  This will be used if the NFT's royalties are shared in WETH.
-     */
-    function unwrapWETH(uint256 amount) public {
-        IWETHMinimal(WETH).withdraw(amount);
-    }
-
     function sendValue(address payable recipient, uint256 amount) internal {
         require(
             address(this).balance >= amount,
@@ -237,39 +225,4 @@ contract CrowdfundLogic is CrowdfundStorage {
         _transfer(from, to, value);
         return true;
     }
-
-    // function permit(
-    //     address owner,
-    //     address spender,
-    //     uint256 value,
-    //     uint256 deadline,
-    //     uint8 v,
-    //     bytes32 r,
-    //     bytes32 s
-    // ) external {
-    //     require(deadline >= block.timestamp, "MirrorWriteToken: EXPIRED");
-    //     bytes32 digest =
-    //         keccak256(
-    //             abi.encodePacked(
-    //                 "\x19\x01",
-    //                 DOMAIN_SEPARATOR,
-    //                 keccak256(
-    //                     abi.encode(
-    //                         PERMIT_TYPEHASH,
-    //                         owner,
-    //                         spender,
-    //                         value,
-    //                         nonces[owner]++,
-    //                         deadline
-    //                     )
-    //                 )
-    //             )
-    //         );
-    //     address recoveredAddress = ecrecover(digest, v, r, s);
-    //     require(
-    //         recoveredAddress != address(0) && recoveredAddress == owner,
-    //         "MirrorWriteToken: INVALID_SIGNATURE"
-    //     );
-    //     _approve(owner, spender, value);
-    // }
 }
