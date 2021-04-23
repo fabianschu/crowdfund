@@ -125,11 +125,10 @@ contract CrowdfundLogic is CrowdfundStorage {
         view
         returns (uint256 redeemable)
     {
+        // TODO: Fuzz test this method.
         redeemable =
-            (tokenAmount * SCALING_FACTOR * address(this).balance) /
-            totalSupply -
-            1 /
-            SCALING_FACTOR +
+            (((((tokenAmount * SCALING_FACTOR * address(this).balance)) /
+                (totalSupply)) - 1) / SCALING_FACTOR) +
             1;
     }
 

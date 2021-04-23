@@ -162,10 +162,10 @@ describe("Crowdfund via Proxy from Factory", () => {
 
           it("it deploys a proxy with the correct data", async () => {
             expect(await proxy.logic()).to.eq(logic.address);
-            // expect(await callableProxy.name()).to.eq(name);
-            // expect(await callableProxy.symbol()).to.eq(symbol);
-            // expect(await callableProxy.operator()).to.eq(creatorWallet.address);
-            // expect(await callableProxy.operatorPercent()).to.eq("5");
+            expect(await callableProxy.name()).to.eq(name);
+            expect(await callableProxy.symbol()).to.eq(symbol);
+            expect(await callableProxy.operator()).to.eq(creatorWallet.address);
+            expect(await callableProxy.operatorPercent()).to.eq("5");
           });
 
           describe("when a contributor attempts to contribute 2 ETH", () => {
@@ -177,33 +177,396 @@ describe("Crowdfund via Proxy from Factory", () => {
             let gasPrice: BigNumber;
 
             beforeEach(async () => {
-              originalBalance = await waffle.provider.getBalance(contributor.address);
-              tx = await callableProxy.contribute(
-                // contributor.address,
-                // fundingAmount,
-                {
-                  value: fundingAmount,
-                }
+              originalBalance = await waffle.provider.getBalance(
+                contributor.address
               );
+              tx = await callableProxy
+                .connect(contributor)
+                .contribute(contributor.address, fundingAmount, {
+                  value: fundingAmount,
+                });
               receipt = await tx.wait();
-              console.log({ receipt });
               gasUsed = receipt.gasUsed;
               gasPrice = tx.gasPrice;
             });
-            it("uses 70889 gas", () => {
-              expect(gasUsed.toString()).to.eq("70889");
+
+            it("uses 92442 gas", () => {
+              expect(gasUsed.toString()).to.eq("92442");
             });
+
             it("increases the contract's balance by 2 ETH", async () => {
-              console.log({ receipt });
-              console.log({ tx });
-              console.log({ v: tx.value.toString() });
-              console.log({ p: proxy.address });
               const contractBalance = await waffle.provider.getBalance(
                 proxy.address
               );
-              console.log({ v: tx.value.toString() });
-              console.log({ b: contractBalance.toString() });
               expect(contractBalance.toString()).to.eq(fundingAmount);
+            });
+
+            it("decrease the contributor's ETH balance by 2 ETH plus gas for the tx", async () => {
+              const ethUsedForTX = gasPrice.mul(gasUsed);
+              const totalCost = ethUsedForTX.add(fundingAmount);
+              const expectedBalance = originalBalance.sub(totalCost);
+              const newBalance = await waffle.provider.getBalance(
+                contributor.address
+              );
+
+              expect(newBalance.toString()).to.eq(expectedBalance.toString());
+            });
+
+            it("mints tokens for the contributor equal to the amount of ETH given, multiplied by the token scale factor", async () => {
+              const tokenBalance = await callableProxy.balanceOf(
+                contributor.address
+              );
+              const expectedBalance = BigNumber.from(fundingAmount).mul(
+                TOKEN_SCALE
+              );
+              expect(tokenBalance.toString()).to.eq(expectedBalance);
+            });
+
+            it("grants them 2 ETH redeemable", async () => {
+              const tokenBalance = await callableProxy.balanceOf(
+                contributor.address
+              );
+              const redeemable = await callableProxy.redeemableFromTokens(
+                tokenBalance
+              );
+              expect(redeemable.toString()).to.eq(fundingAmount);
+            });
+
+            it("emits a Transfer and Contribution event", async () => {
+              const logs = await waffle.provider.getLogs({});
+
+              expect(logs.length).eq(2);
+
+              const transferEvent = callableProxy.interface.parseLog(logs[0]);
+              const contributionEvent = callableProxy.interface.parseLog(
+                logs[1]
+              );
+
+              expect(transferEvent.name).to.eq("Transfer");
+              expect(contributionEvent.name).to.eq("Contribution");
+
+              expect(contributionEvent.args[0]).to.eq(contributor.address);
+              expect(contributionEvent.args[1].toString()).to.eq(fundingAmount);
+            });
+
+            describe("when the contributor attempts to redeem 1.2 ETH worth their contributions", () => {
+              const withdrawAmount = "1200000000000000000"; // 1.2 ETH in wei
+              const tokenAmount = BigNumber.from(withdrawAmount).mul(
+                TOKEN_SCALE
+              );
+              const remainingETH = "800000000000000000";
+              const remainingSupply = BigNumber.from(remainingETH).mul(
+                TOKEN_SCALE
+              );
+              let originalTokenBalance;
+              let originalETHBalance;
+              let originalContractBalance;
+
+              beforeEach(async () => {
+                originalContractBalance = await waffle.provider.getBalance(
+                  callableProxy.address
+                );
+                originalETHBalance = await waffle.provider.getBalance(
+                  contributor.address
+                );
+                originalTokenBalance = await callableProxy
+                  .connect(contributor)
+                  .balanceOf(contributor.address);
+
+                tx = await callableProxy
+                  .connect(contributor)
+                  .redeem(tokenAmount);
+
+                receipt = await tx.wait();
+
+                gasUsed = receipt.gasUsed;
+                gasPrice = tx.gasPrice;
+              });
+
+              it(`burns their tokens, so that their token balance is ${remainingSupply.toString()}`, async () => {
+                const newTokenBalance = await callableProxy
+                  .connect(contributor)
+                  .balanceOf(contributor.address);
+
+                expect(newTokenBalance.toString()).to.eq(
+                  remainingSupply.toString()
+                );
+              });
+
+              it(`totalSupply() is now ${remainingSupply.toString()}`, async () => {
+                const supply = await callableProxy.totalSupply();
+
+                expect(supply.toString()).to.eq(remainingSupply.toString());
+              });
+
+              it("decreases the contract's balance by 1.2 ETH", async () => {
+                const newContractBalance = await waffle.provider.getBalance(
+                  callableProxy.address
+                );
+
+                expect(newContractBalance.toString()).to.eq(
+                  BigNumber.from(originalContractBalance)
+                    .sub(withdrawAmount)
+                    .toString()
+                );
+              });
+
+              it("increases the sender's balance by 1.2 ETH, minus gas", async () => {
+                const newEthBalance = await waffle.provider.getBalance(
+                  contributor.address
+                );
+                const ethUsedForTX = gasPrice.mul(gasUsed);
+                const expectedBalance = originalETHBalance
+                  .add(withdrawAmount)
+                  .sub(ethUsedForTX);
+
+                expect(newEthBalance.toString()).to.eq(
+                  expectedBalance.toString()
+                );
+              });
+
+              it("uses 50770 gas", () => {
+                expect(gasUsed.toString()).to.eq("50770");
+              });
+
+              it("emits a Transfer and Withdrawal event", async () => {
+                const logs = await waffle.provider.getLogs({});
+
+                expect(logs.length).eq(2);
+
+                const transferEvent = callableProxy.interface.parseLog(logs[0]);
+                const redeemEvent = callableProxy.interface.parseLog(logs[1]);
+
+                expect(transferEvent.name).to.eq("Transfer");
+                expect(redeemEvent.name).to.eq("Redeemed");
+
+                expect(redeemEvent.args[0]).to.eq(contributor.address);
+                expect(redeemEvent.args[1].toString()).to.eq(withdrawAmount);
+              });
+
+              describe("when another contributor adds 3.3 ETH", () => {
+                let originalBalance;
+                let fundingAmount = "3300000000000000000"; // 2 ETH in wei
+                let tokenAmount = BigNumber.from(fundingAmount).mul(
+                  TOKEN_SCALE
+                );
+                let expectedSupply = BigNumber.from("4100000000000000000").mul(
+                  TOKEN_SCALE
+                );
+                let tx;
+                let receipt;
+                let gasUsed: BigNumber;
+                let gasPrice: BigNumber;
+
+                beforeEach(async () => {
+                  originalBalance = await waffle.provider.getBalance(
+                    secondContributor.address
+                  );
+
+                  tx = await callableProxy
+                    .connect(secondContributor)
+                    .contribute(secondContributor.address, fundingAmount, {
+                      value: fundingAmount,
+                    });
+                  receipt = await tx.wait();
+
+                  gasUsed = receipt.gasUsed;
+                  gasPrice = tx.gasPrice;
+                });
+
+                it("uses 58230 gas", () => {
+                  expect(gasUsed.toString()).to.eq("58230");
+                });
+
+                it("increases the contract's balance by 3.3 ETH", async () => {
+                  const contractBalance = await waffle.provider.getBalance(
+                    callableProxy.address
+                  );
+                  expect(contractBalance.toString()).to.eq(
+                    BigNumber.from("800000000000000000")
+                      .add(fundingAmount)
+                      .toString()
+                  );
+                });
+
+                it("decrease the contributor's ETH balance by 3.3 ETH plus gas for the tx", async () => {
+                  const ethUsedForTX = gasPrice.mul(gasUsed);
+                  const totalCost = ethUsedForTX.add(fundingAmount);
+                  const expectedBalance = originalBalance.sub(totalCost);
+                  const newBalance = await waffle.provider.getBalance(
+                    secondContributor.address
+                  );
+
+                  expect(newBalance.toString()).to.eq(
+                    expectedBalance.toString()
+                  );
+                });
+
+                it("mints tokens for the contributor equal to the amount of ETH given", async () => {
+                  const tokenBalance = await callableProxy.balanceOf(
+                    secondContributor.address
+                  );
+                  expect(tokenBalance.toString()).to.eq(tokenAmount.toString());
+                });
+
+                it("grants them 3.3 ETH redeemable", async () => {
+                  const tokenBalance = await callableProxy.balanceOf(
+                    secondContributor.address
+                  );
+                  const redeemable = await callableProxy.redeemableFromTokens(
+                    tokenBalance
+                  );
+                  expect(redeemable.toString()).to.eq(fundingAmount);
+                });
+
+                it("emits a Transfer and Contribution event", async () => {
+                  const logs = await waffle.provider.getLogs({});
+
+                  expect(logs.length).eq(2);
+
+                  const transferEvent = callableProxy.interface.parseLog(
+                    logs[0]
+                  );
+                  const contributionEvent = callableProxy.interface.parseLog(
+                    logs[1]
+                  );
+
+                  expect(transferEvent.name).to.eq("Transfer");
+                  expect(contributionEvent.name).to.eq("Contribution");
+
+                  expect(contributionEvent.args[0]).to.eq(
+                    secondContributor.address
+                  );
+                  expect(contributionEvent.args[1].toString()).to.eq(
+                    fundingAmount
+                  );
+                });
+
+                it(`totalSupply() is now ${expectedSupply.toString()}`, async () => {
+                  const supply = await callableProxy.totalSupply();
+
+                  expect(supply.toString()).to.eq(expectedSupply.toString());
+                });
+
+                describe("when the contributor attempts to withdraw 4 ETH worth from the contract", () => {
+                  let tokenAmount = BigNumber.from("4000000000000000000").mul(
+                    TOKEN_SCALE
+                  );
+
+                  it("reverts the transaction", async () => {
+                    await expect(
+                      callableProxy
+                        .connect(secondContributor)
+                        .redeem(tokenAmount)
+                    ).to.be.revertedWith("Insufficient balance");
+                  });
+                });
+
+                describe("when the contributor attempts to withdraw .2 ETH from their contributions", () => {
+                  const withdrawAmount = "200000000000000000"; // 0.2 ETH in wei
+                  const tokenAmount = BigNumber.from(withdrawAmount).mul(
+                    TOKEN_SCALE
+                  );
+                  const remainingBalance = BigNumber.from(
+                    "3100000000000000000"
+                  ).mul(TOKEN_SCALE);
+                  const expectedSupply = BigNumber.from(
+                    "3900000000000000000"
+                  ).mul(TOKEN_SCALE);
+                  let originalTokenBalance;
+                  let originalETHBalance;
+                  let originalContractBalance;
+
+                  beforeEach(async () => {
+                    originalContractBalance = await waffle.provider.getBalance(
+                      callableProxy.address
+                    );
+                    originalETHBalance = await waffle.provider.getBalance(
+                      secondContributor.address
+                    );
+                    originalTokenBalance = await callableProxy
+                      .connect(secondContributor)
+                      .balanceOf(secondContributor.address);
+
+                    tx = await callableProxy
+                      .connect(secondContributor)
+                      .redeem(tokenAmount);
+
+                    receipt = await tx.wait();
+
+                    gasUsed = receipt.gasUsed;
+                    gasPrice = tx.gasPrice;
+                  });
+
+                  it(`burns their tokens, so that their token balance is ${remainingBalance.toString()}`, async () => {
+                    const newTokenBalance = await callableProxy
+                      .connect(secondContributor)
+                      .balanceOf(secondContributor.address);
+
+                    expect(newTokenBalance.toString()).to.eq(
+                      remainingBalance.toString()
+                    );
+                  });
+
+                  it("decreases the contract's balance by 0.2 ETH", async () => {
+                    const newContractBalance = await waffle.provider.getBalance(
+                      callableProxy.address
+                    );
+
+                    expect(newContractBalance.toString()).to.eq(
+                      BigNumber.from(originalContractBalance)
+                        .sub(withdrawAmount)
+                        .toString()
+                    );
+                  });
+
+                  it("increases the sender's balance by 0.2 ETH, minus gas", async () => {
+                    const newEthBalance = await waffle.provider.getBalance(
+                      secondContributor.address
+                    );
+                    const ethUsedForTX = gasPrice.mul(gasUsed);
+                    const expectedBalance = originalETHBalance
+                      .add(withdrawAmount)
+                      .sub(ethUsedForTX);
+
+                    expect(newEthBalance.toString()).to.eq(
+                      expectedBalance.toString()
+                    );
+                  });
+
+                  it("uses 50770 gas", () => {
+                    expect(gasUsed.toString()).to.eq("50770");
+                  });
+
+                  it("emits a Transfer and Withdrawal event", async () => {
+                    const logs = await waffle.provider.getLogs({});
+
+                    expect(logs.length).eq(2);
+
+                    const transferEvent = callableProxy.interface.parseLog(
+                      logs[0]
+                    );
+                    const redeemEvent = callableProxy.interface.parseLog(
+                      logs[1]
+                    );
+
+                    expect(transferEvent.name).to.eq("Transfer");
+                    expect(redeemEvent.name).to.eq("Redeemed");
+
+                    expect(redeemEvent.args[0]).to.eq(
+                      secondContributor.address
+                    );
+                    expect(redeemEvent.args[1].toString()).to.eq(
+                      withdrawAmount
+                    );
+                  });
+
+                  it(`totalSupply() is now ${expectedSupply.toString()}`, async () => {
+                    const supply = await callableProxy.totalSupply();
+                    expect(supply.toString()).to.eq(expectedSupply.toString());
+                  });
+                });
+              });
             });
           });
         });

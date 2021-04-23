@@ -31,6 +31,7 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
     "contribute(address,uint256)": FunctionFragment;
     "decimals()": FunctionFragment;
     "fundingCap()": FunctionFragment;
+    "logic()": FunctionFragment;
     "mediaAddress()": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -70,6 +71,7 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
     functionFragment: "fundingCap",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "logic", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "mediaAddress",
     values?: undefined
@@ -123,6 +125,7 @@ interface CrowdfundLogicInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "contribute", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "fundingCap", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mediaAddress",
     data: BytesLike
@@ -247,6 +250,10 @@ export class CrowdfundLogic extends Contract {
     fundingCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "fundingCap()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    logic(overrides?: CallOverrides): Promise<[string]>;
+
+    "logic()"(overrides?: CallOverrides): Promise<[string]>;
 
     mediaAddress(overrides?: CallOverrides): Promise<[string]>;
 
@@ -409,6 +416,10 @@ export class CrowdfundLogic extends Contract {
 
   "fundingCap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  logic(overrides?: CallOverrides): Promise<string>;
+
+  "logic()"(overrides?: CallOverrides): Promise<string>;
+
   mediaAddress(overrides?: CallOverrides): Promise<string>;
 
   "mediaAddress()"(overrides?: CallOverrides): Promise<string>;
@@ -569,6 +580,10 @@ export class CrowdfundLogic extends Contract {
     fundingCap(overrides?: CallOverrides): Promise<BigNumber>;
 
     "fundingCap()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    logic(overrides?: CallOverrides): Promise<string>;
+
+    "logic()"(overrides?: CallOverrides): Promise<string>;
 
     mediaAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -746,6 +761,10 @@ export class CrowdfundLogic extends Contract {
 
     "fundingCap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    logic(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "logic()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     mediaAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "mediaAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -907,6 +926,10 @@ export class CrowdfundLogic extends Contract {
     fundingCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "fundingCap()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    logic(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "logic()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     mediaAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

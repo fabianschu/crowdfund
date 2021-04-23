@@ -72,5 +72,5 @@ contract CrowdfundStorage {
     mapping(address => uint256) public nonces;
 
     // ============ Delegation logic ============
-    address internal logic;
+    address public logic;
 }
