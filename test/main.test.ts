@@ -31,6 +31,8 @@ const STATUS_MAP = ["FUNDING", "TRADING"];
 
 let WETH: Contract;
 
+const { provider } = waffle;
+
 describe("Crowdfund via Proxy from Factory", () => {
   let deployerWallet;
   let contributor;
@@ -39,6 +41,7 @@ describe("Crowdfund via Proxy from Factory", () => {
   let bidderWallet;
   let fakeMediaContract;
   let mediaAddress;
+  let funder;
 
   before(async () => {
     [
@@ -48,6 +51,7 @@ describe("Crowdfund via Proxy from Factory", () => {
       creatorWallet,
       bidderWallet,
       fakeMediaContract,
+      funder,
     ] = await ethers.getSigners();
 
     mediaAddress = fakeMediaContract.address;
@@ -177,9 +181,7 @@ describe("Crowdfund via Proxy from Factory", () => {
             let gasPrice: BigNumber;
 
             beforeEach(async () => {
-              originalBalance = await waffle.provider.getBalance(
-                contributor.address
-              );
+              originalBalance = await provider.getBalance(contributor.address);
               tx = await callableProxy
                 .connect(contributor)
                 .contribute(contributor.address, fundingAmount, {
@@ -195,9 +197,7 @@ describe("Crowdfund via Proxy from Factory", () => {
             });
 
             it("increases the contract's balance by 2 ETH", async () => {
-              const contractBalance = await waffle.provider.getBalance(
-                proxy.address
-              );
+              const contractBalance = await provider.getBalance(proxy.address);
               expect(contractBalance.toString()).to.eq(fundingAmount);
             });
 
@@ -205,9 +205,7 @@ describe("Crowdfund via Proxy from Factory", () => {
               const ethUsedForTX = gasPrice.mul(gasUsed);
               const totalCost = ethUsedForTX.add(fundingAmount);
               const expectedBalance = originalBalance.sub(totalCost);
-              const newBalance = await waffle.provider.getBalance(
-                contributor.address
-              );
+              const newBalance = await provider.getBalance(contributor.address);
 
               expect(newBalance.toString()).to.eq(expectedBalance.toString());
             });
@@ -233,7 +231,7 @@ describe("Crowdfund via Proxy from Factory", () => {
             });
 
             it("emits a Transfer and Contribution event", async () => {
-              const logs = await waffle.provider.getLogs({});
+              const logs = await provider.getLogs({});
 
               expect(logs.length).eq(2);
 
@@ -263,10 +261,10 @@ describe("Crowdfund via Proxy from Factory", () => {
               let originalContractBalance;
 
               beforeEach(async () => {
-                originalContractBalance = await waffle.provider.getBalance(
+                originalContractBalance = await provider.getBalance(
                   callableProxy.address
                 );
-                originalETHBalance = await waffle.provider.getBalance(
+                originalETHBalance = await provider.getBalance(
                   contributor.address
                 );
                 originalTokenBalance = await callableProxy
@@ -300,7 +298,7 @@ describe("Crowdfund via Proxy from Factory", () => {
               });
 
               it("decreases the contract's balance by 1.2 ETH", async () => {
-                const newContractBalance = await waffle.provider.getBalance(
+                const newContractBalance = await provider.getBalance(
                   callableProxy.address
                 );
 
@@ -312,7 +310,7 @@ describe("Crowdfund via Proxy from Factory", () => {
               });
 
               it("increases the sender's balance by 1.2 ETH, minus gas", async () => {
-                const newEthBalance = await waffle.provider.getBalance(
+                const newEthBalance = await provider.getBalance(
                   contributor.address
                 );
                 const ethUsedForTX = gasPrice.mul(gasUsed);
@@ -330,7 +328,7 @@ describe("Crowdfund via Proxy from Factory", () => {
               });
 
               it("emits a Transfer and Withdrawal event", async () => {
-                const logs = await waffle.provider.getLogs({});
+                const logs = await provider.getLogs({});
 
                 expect(logs.length).eq(2);
 
@@ -359,7 +357,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                 let gasPrice: BigNumber;
 
                 beforeEach(async () => {
-                  originalBalance = await waffle.provider.getBalance(
+                  originalBalance = await provider.getBalance(
                     secondContributor.address
                   );
 
@@ -379,7 +377,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                 });
 
                 it("increases the contract's balance by 3.3 ETH", async () => {
-                  const contractBalance = await waffle.provider.getBalance(
+                  const contractBalance = await provider.getBalance(
                     callableProxy.address
                   );
                   expect(contractBalance.toString()).to.eq(
@@ -393,7 +391,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                   const ethUsedForTX = gasPrice.mul(gasUsed);
                   const totalCost = ethUsedForTX.add(fundingAmount);
                   const expectedBalance = originalBalance.sub(totalCost);
-                  const newBalance = await waffle.provider.getBalance(
+                  const newBalance = await provider.getBalance(
                     secondContributor.address
                   );
 
@@ -420,7 +418,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                 });
 
                 it("emits a Transfer and Contribution event", async () => {
-                  const logs = await waffle.provider.getLogs({});
+                  const logs = await provider.getLogs({});
 
                   expect(logs.length).eq(2);
 
@@ -478,10 +476,10 @@ describe("Crowdfund via Proxy from Factory", () => {
                   let originalContractBalance;
 
                   beforeEach(async () => {
-                    originalContractBalance = await waffle.provider.getBalance(
+                    originalContractBalance = await provider.getBalance(
                       callableProxy.address
                     );
-                    originalETHBalance = await waffle.provider.getBalance(
+                    originalETHBalance = await provider.getBalance(
                       secondContributor.address
                     );
                     originalTokenBalance = await callableProxy
@@ -509,7 +507,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                   });
 
                   it("decreases the contract's balance by 0.2 ETH", async () => {
-                    const newContractBalance = await waffle.provider.getBalance(
+                    const newContractBalance = await provider.getBalance(
                       callableProxy.address
                     );
 
@@ -521,7 +519,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                   });
 
                   it("increases the sender's balance by 0.2 ETH, minus gas", async () => {
-                    const newEthBalance = await waffle.provider.getBalance(
+                    const newEthBalance = await provider.getBalance(
                       secondContributor.address
                     );
                     const ethUsedForTX = gasPrice.mul(gasUsed);
@@ -539,7 +537,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                   });
 
                   it("emits a Transfer and Withdrawal event", async () => {
-                    const logs = await waffle.provider.getLogs({});
+                    const logs = await provider.getLogs({});
 
                     expect(logs.length).eq(2);
 
@@ -565,7 +563,199 @@ describe("Crowdfund via Proxy from Factory", () => {
                     const supply = await callableProxy.totalSupply();
                     expect(supply.toString()).to.eq(expectedSupply.toString());
                   });
+
+                  describe("when the operator closes funding", () => {
+                    let originalCreatorBalance;
+                    let originalContractBalance;
+                    let tx;
+                    let ethUsedForTX;
+
+                    beforeEach(async () => {
+                      originalCreatorBalance = await provider.getBalance(
+                        creatorWallet.address
+                      );
+                      originalContractBalance = await provider.getBalance(
+                        callableProxy.address
+                      );
+                      tx = await callableProxy
+                        .connect(creatorWallet)
+                        .closeFunding();
+
+                      const receipt = await tx.wait();
+                      const { gasPrice } = tx;
+                      ethUsedForTX = gasPrice.mul(receipt.gasUsed);
+                    });
+
+                    it("mints 5 percent of tokens to the operator", async () => {
+                      const operatorEquity = (await callableProxy.totalSupply())
+                        .mul(5)
+                        .div(100);
+                      const operatorTokenBalance = await callableProxy.balanceOf(
+                        creatorWallet.address
+                      );
+                      expect(operatorTokenBalance.toString()).to.eq(
+                        operatorEquity.toString()
+                      );
+                    });
+
+                    it("transfers funds out of the crowdfund", async () => {
+                      const updatedContractBalance = await provider.getBalance(
+                        callableProxy.address
+                      );
+                      expect(updatedContractBalance.toString()).to.eq("0");
+                    });
+
+                    it("transfers the ETH to the operator, minus gas", async () => {
+                      const updatedCreatorBalance = await provider.getBalance(
+                        creatorWallet.address
+                      );
+                      const expectedBalance = originalCreatorBalance
+                        .sub(ethUsedForTX)
+                        .add(originalContractBalance);
+
+                      expect(updatedCreatorBalance.toString()).to.eq(
+                        expectedBalance.toString()
+                      );
+                    });
+
+                    it("emits a Funding Closed event", async () => {
+                      const logs = await provider.getLogs({});
+
+                      const event = callableProxy.interface.parseLog(logs[1]);
+
+                      expect(event.name).to.eq("FundingClosed");
+
+                      expect(event.args[0]).to.eq(
+                        // The amount raised
+                        "3900000000000000000"
+                      );
+                      expect(event.args[1]).to.eq(
+                        // Tokens for Operator
+                        "205263157894736842105"
+                      );
+                    });
+
+                    it("sets the status to TRADING", async () => {
+                      const status = await callableProxy.status();
+                      expect(STATUS_MAP[status]).to.eq("TRADING");
+                    });
+
+                    describe("when a contribution is attempted after funding is closed", () => {
+                      it("reverts the transaction", async () => {
+                        await expect(
+                          callableProxy
+                            .connect(contributor)
+                            .contribute(contributor.address, 10, { value: 10 })
+                        ).to.be.revertedWith("Funding must be open");
+                      });
+                    });
+
+                    describe("and 1.75 ETH is added to the crowdfund", () => {
+                      beforeEach(async () => {
+                        originalContractBalance = await provider.getBalance(
+                          callableProxy.address
+                        );
+
+                        await funder.sendTransaction({
+                          to: callableProxy.address,
+                          value: ethers.utils.parseEther("1.75"),
+                        });
+                      });
+
+                      it("increases the contract's balance by that amount", async () => {
+                        const newContractBalance = await provider.getBalance(
+                          callableProxy.address
+                        );
+
+                        expect(newContractBalance.toString()).eq(
+                          originalContractBalance
+                            .add(ethers.utils.parseEther("1.75"))
+                            .toString()
+                        );
+                      });
+                    });
+                  });
                 });
+              });
+            });
+          });
+
+          describe("when a contributor attempts to contribute more than the funding cap", () => {
+            let overfundingAmount = "20000000000000000000"; // 20 ETH
+            let amountBefore;
+            let amountAfter;
+            let receipt;
+
+            it("refunds the excess ETH while keeping the amount less the funding cap", async () => {
+              // Check that the crowdfund does not have any ETH in to start with.
+              amountBefore = await provider.getBalance(callableProxy.address);
+              expect(amountBefore.toString()).to.eq("0");
+              // Sanity check that the contributor doesn't have any tokens to start with.
+              const tokenBalanceBefore = await callableProxy.balanceOf(
+                contributor.address
+              );
+              expect(tokenBalanceBefore.toString()).to.eq("0");
+              const balanceBefore = await provider.getBalance(
+                contributor.address
+              );
+              const tx = await callableProxy
+                .connect(contributor)
+                .contribute(contributor.address, overfundingAmount, {
+                  value: overfundingAmount,
+                });
+              receipt = await tx.wait();
+              amountAfter = await provider.getBalance(callableProxy.address);
+              const balanceAfter = await provider.getBalance(
+                contributor.address
+              );
+
+              expect(amountAfter.toString()).to.eq(fundingCap);
+              // 20 ETH sent in, 9 ETH retained, 11 sent back. Therefore,
+              // Balance should be funding cap, minus gas costs.
+              expect(
+                balanceBefore
+                  .sub(balanceAfter)
+                  .sub(receipt.gasUsed.mul(tx.gasPrice))
+                  .toString()
+              ).to.eq(fundingCap);
+
+              // Check that the user's token balance is correct.
+              const tokenBalance = await callableProxy.balanceOf(
+                contributor.address
+              );
+              expect(tokenBalance.toString()).to.eq(
+                BigNumber.from(fundingCap).mul(TOKEN_SCALE).toString()
+              );
+            });
+
+            it("uses 101891 gas", () => {
+              expect(receipt.gasUsed.toString()).to.eq("101891");
+            })
+
+            describe("when a contributor adds ETH once the funding cap is already reached", () => {
+              it("reverts the transaction", async () => {
+                const tx = await callableProxy
+                  .connect(contributor)
+                  .contribute(contributor.address, overfundingAmount, {
+                    value: overfundingAmount,
+                  });
+                receipt = await tx.wait();
+                // Now the funding amount should be equal to the cap.
+                amountBefore = await provider.getBalance(callableProxy.address);
+                // Sanity check the above.
+                expect(amountBefore.toString()).to.eq(fundingCap);
+                // Attempt to contribute 1 wei more.
+                const txPromise = callableProxy
+                  .connect(contributor)
+                  // Even a minute number will trigger the revert!
+                  .contribute(contributor.address, "1", { value: "1" });
+                // Expect that to revert with a helpful error.
+                await expect(txPromise).to.be.revertedWith(
+                  "Funding cap already reached"
+                );
+                // Sanity check that the amount afterwards is still the funding cap.
+                amountAfter = await provider.getBalance(callableProxy.address);
+                expect(amountAfter.toString()).to.eq(fundingCap);
               });
             });
           });
