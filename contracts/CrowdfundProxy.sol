@@ -63,6 +63,5 @@ contract CrowdfundProxy is CrowdfundStorage {
         }
     }
 
-    // Plain ETH transfers.
     receive() external payable {}
 }

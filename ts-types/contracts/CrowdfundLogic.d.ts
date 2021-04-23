@@ -291,12 +291,12 @@ export class CrowdfundLogic extends Contract {
     redeemableFromTokens(
       tokenAmount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { redeemable: BigNumber }>;
+    ): Promise<[BigNumber]>;
 
     "redeemableFromTokens(uint256)"(
       tokenAmount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { redeemable: BigNumber }>;
+    ): Promise<[BigNumber]>;
 
     status(overrides?: CallOverrides): Promise<[number]>;
 

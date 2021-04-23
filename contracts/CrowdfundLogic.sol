@@ -123,13 +123,9 @@ contract CrowdfundLogic is CrowdfundStorage {
     function redeemableFromTokens(uint256 tokenAmount)
         public
         view
-        returns (uint256 redeemable)
+        returns (uint256)
     {
-        // TODO: Fuzz test this method.
-        redeemable =
-            (((((tokenAmount * SCALING_FACTOR * address(this).balance)) /
-                (totalSupply)) - 1) / SCALING_FACTOR) +
-            1;
+        return (tokenAmount * address(this).balance) / totalSupply;
     }
 
     function valueToTokens(uint256 value) public pure returns (uint256 tokens) {
@@ -173,14 +169,6 @@ contract CrowdfundLogic is CrowdfundStorage {
      */
     function unwrapWETH(uint256 amount) public {
         IWETHMinimal(WETH).withdraw(amount);
-    }
-
-    /**
-     * @notice Prevents ETH from being sent directly to the contract, except
-     *  from the WETH contract, during acceptBid.
-     */
-    receive() external payable {
-        assert(msg.sender == WETH);
     }
 
     function sendValue(address payable recipient, uint256 amount) internal {
@@ -258,7 +246,7 @@ contract CrowdfundLogic is CrowdfundStorage {
     //     uint8 v,
     //     bytes32 r,
     //     bytes32 s
-    // ) external override {
+    // ) external {
     //     require(deadline >= block.timestamp, "MirrorWriteToken: EXPIRED");
     //     bytes32 digest =
     //         keccak256(
@@ -283,11 +271,5 @@ contract CrowdfundLogic is CrowdfundStorage {
     //         "MirrorWriteToken: INVALID_SIGNATURE"
     //     );
     //     _approve(owner, spender, value);
-    // }
-
-    // function _getChainId() private pure returns (uint256 chainId) {
-    //     assembly {
-    //         chainId := chainid()
-    //     }
     // }
 }

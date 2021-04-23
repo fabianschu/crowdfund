@@ -31,8 +31,6 @@ contract CrowdfundStorage {
 
     // ============ Constants ============
 
-    // Used to multiply values before division, to minimize rounding errors.
-    uint64 internal constant SCALING_FACTOR = 1e18;
     // Returned by the hook that is invoked when an ERC721 token is sent to this address.
     bytes4 internal constant ERC721_RECEIVED_RETURN = 0x150b7a02;
     // To check that the given media address represents an ERC721 contract.

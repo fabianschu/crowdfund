@@ -95,7 +95,7 @@ describe("Crowdfund via Proxy from Factory", () => {
         });
 
         describe("and a proxy is created through the factory", () => {
-          let deploymentEvent;
+          let deploymentEvent, gasUsed;
 
           beforeEach(async () => {
             const operatorEquity = 5;
@@ -109,7 +109,7 @@ describe("Crowdfund via Proxy from Factory", () => {
                 BigNumber.from(operatorEquity)
               );
             const receipt = await deployTx.wait();
-            const { gasUsed } = receipt;
+            gasUsed = receipt.gasUsed;
 
             deploymentEvent = factory.interface.parseLog(receipt.events[0]);
 
@@ -170,6 +170,153 @@ describe("Crowdfund via Proxy from Factory", () => {
             expect(await callableProxy.symbol()).to.eq(symbol);
             expect(await callableProxy.operator()).to.eq(creatorWallet.address);
             expect(await callableProxy.operatorPercent()).to.eq("5");
+          });
+
+          it("uses 556512 gas", () => {
+            expect(gasUsed.toString()).to.eq("556512");
+          });
+
+          describe("#redeemableFromTokens", () => {
+            describe("scenarios", () => {
+              // Used wolframalpha for these.
+              let scenarios = [
+                {
+                  contributed: "7.342",
+                  redeemed: "1.2",
+                  fundsAdded: "0",
+                  tokens: "2141",
+                  expected: "2.141",
+                },
+                {
+                  contributed: "7.342",
+                  redeemed: "1.2",
+                  fundsAdded: "1",
+                  tokens: "2141",
+                  expected: "2.489583523282318463",
+                },
+                {
+                  contributed: "0.9432951",
+                  redeemed: "0.4500796", // token supply is 493.2155
+                  fundsAdded: "8.4494762", // balance is 8.9426917
+                  tokens: "1029.1585",
+                  expected: "18.66009315590132508",
+                },
+                {
+                  contributed: "7.0461205",
+                  redeemed: "0.17318647", // token supply is 6872.93403
+                  fundsAdded: "44.15245", // balance is 51.02538403
+                  tokens: "287.05264",
+                  expected: "2.13110894545067228",
+                },
+              ];
+
+              for (let i = 0; i < scenarios.length; i++) {
+                const {
+                  contributed,
+                  redeemed,
+                  tokens,
+                  expected,
+                  fundsAdded,
+                } = scenarios[i];
+
+                describe(`when ${contributed} ETH was contributed`, () => {
+                  beforeEach(async () => {
+                    await callableProxy
+                      .connect(funder)
+                      .contribute(
+                        funder.address,
+                        ethers.utils.parseEther(contributed),
+                        {
+                          value: ethers.utils.parseEther(contributed),
+                        }
+                      );
+                  });
+
+                  it("increases the contract's balance by that amount", async () => {
+                    const newContractBalance = await provider.getBalance(
+                      callableProxy.address
+                    );
+
+                    expect(newContractBalance.toString()).eq(
+                      ethers.utils.parseEther(contributed).toString()
+                    );
+                  });
+
+                  it("increases the contract's total supply", async () => {
+                    const tokenAmount = ethers.utils
+                      .parseEther(contributed)
+                      .mul(TOKEN_SCALE)
+                      .toString();
+
+                    expect((await callableProxy.totalSupply()).toString()).eq(
+                      tokenAmount
+                    );
+                  });
+
+                  describe(`and ${redeemed} tokens were redeemed`, () => {
+                    beforeEach(async () => {
+                      await callableProxy
+                        .connect(funder)
+                        .redeem(
+                          ethers.utils
+                            .parseEther(redeemed)
+                            .mul(TOKEN_SCALE)
+                            .toString()
+                        );
+                    });
+
+                    it("decreases the contract's balance by that amount", async () => {
+                      const newContractBalance = await provider.getBalance(
+                        callableProxy.address
+                      );
+
+                      const expected = ethers.utils
+                        .parseEther(contributed)
+                        .sub(ethers.utils.parseEther(redeemed));
+
+                      expect(newContractBalance.toString()).eq(
+                        expected.toString()
+                      );
+                    });
+
+                    describe(`and ${fundsAdded} ETH was added`, () => {
+                      beforeEach(async () => {
+                        await funder.sendTransaction({
+                          to: callableProxy.address,
+                          value: ethers.utils.parseEther(fundsAdded),
+                        });
+                      });
+
+                      describe(`and it is called with ${tokens} tokens`, () => {
+                        beforeEach(async () => {
+                          // Sanity check the total supply.
+                          const expected = ethers.utils
+                            .parseEther(contributed)
+                            .sub(ethers.utils.parseEther(redeemed))
+                            // NOTE: Total supply does not increase from funds added!
+                            .mul(TOKEN_SCALE);
+                          expect(
+                            (await callableProxy.totalSupply()).toString()
+                          ).eq(expected.toString());
+                        });
+
+                        it(`returns ${expected} ETH`, async () => {
+                          const toBurn = ethers.utils
+                            .parseEther(tokens)
+                            .toString();
+                          const expectedETH = ethers.utils
+                            .parseEther(expected)
+                            .toString();
+                          expect(
+                            await callableProxy.redeemableFromTokens(toBurn)
+                          ).to.eq(expectedETH);
+                        });
+                      });
+                    });
+                  });
+                });
+              }
+            });
           });
 
           describe("when a contributor attempts to contribute 2 ETH", () => {
@@ -323,8 +470,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                 );
               });
 
-              it("uses 50770 gas", () => {
-                expect(gasUsed.toString()).to.eq("50770");
+              it("uses 50469 gas", () => {
+                expect(gasUsed.toString()).to.eq("50469");
               });
 
               it("emits a Transfer and Withdrawal event", async () => {
@@ -532,8 +679,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                     );
                   });
 
-                  it("uses 50770 gas", () => {
-                    expect(gasUsed.toString()).to.eq("50770");
+                  it("uses 50469 gas", () => {
+                    expect(gasUsed.toString()).to.eq("50469");
                   });
 
                   it("emits a Transfer and Withdrawal event", async () => {
@@ -730,7 +877,7 @@ describe("Crowdfund via Proxy from Factory", () => {
 
             it("uses 101891 gas", () => {
               expect(receipt.gasUsed.toString()).to.eq("101891");
-            })
+            });
 
             describe("when a contributor adds ETH once the funding cap is already reached", () => {
               it("reverts the transaction", async () => {
