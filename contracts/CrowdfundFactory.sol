@@ -12,6 +12,7 @@ contract CrowdfundFactory {
 
     struct Parameters {
         address payable operator;
+        address payable fundingRecipient;
         uint256 fundingCap;
         uint256 operatorPercent;
         string name;
@@ -48,6 +49,7 @@ contract CrowdfundFactory {
         string calldata name_,
         string calldata symbol_,
         address payable operator_,
+        address payable fundingRecipient_,
         uint256 fundingCap_,
         uint256 operatorPercent_
     ) external returns (address crowdfundProxy) {
@@ -55,6 +57,7 @@ contract CrowdfundFactory {
             name: name_,
             symbol: symbol_,
             operator: operator_,
+            fundingRecipient: fundingRecipient_,
             fundingCap: fundingCap_,
             operatorPercent: operatorPercent_
         });

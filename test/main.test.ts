@@ -36,10 +36,8 @@ describe("Crowdfund via Proxy from Factory", () => {
   let contributor;
   let secondContributor;
   let creatorWallet;
-  let bidderWallet;
-  let fakeMediaContract;
-  let mediaAddress;
   let funder;
+  let fundingRecipient;
 
   before(async () => {
     [
@@ -47,9 +45,8 @@ describe("Crowdfund via Proxy from Factory", () => {
       contributor,
       secondContributor,
       creatorWallet,
-      bidderWallet,
-      fakeMediaContract,
       funder,
+      fundingRecipient,
     ] = await ethers.getSigners();
   });
 
@@ -86,15 +83,14 @@ describe("Crowdfund via Proxy from Factory", () => {
 
           beforeEach(async () => {
             const operatorEquity = 5;
-            const deployTx = await factory
-              // .connect(creatorWallet)
-              .createCrowdfund(
-                name,
-                symbol,
-                creatorWallet.address,
-                BigNumber.from(fundingCap),
-                BigNumber.from(operatorEquity)
-              );
+            const deployTx = await factory.createCrowdfund(
+              name,
+              symbol,
+              creatorWallet.address,
+              fundingRecipient.address,
+              BigNumber.from(fundingCap),
+              BigNumber.from(operatorEquity)
+            );
             const receipt = await deployTx.wait();
             gasUsed = receipt.gasUsed;
 
@@ -159,8 +155,8 @@ describe("Crowdfund via Proxy from Factory", () => {
             expect(await callableProxy.operatorPercent()).to.eq("5");
           });
 
-          it("uses 488175 gas", () => {
-            expect(gasUsed.toString()).to.eq("488175");
+          it("uses 525031 gas", () => {
+            expect(gasUsed.toString()).to.eq("525031");
           });
 
           describe("#redeemableFromTokens", () => {
@@ -326,8 +322,8 @@ describe("Crowdfund via Proxy from Factory", () => {
               gasPrice = tx.gasPrice;
             });
 
-            it("uses 92397 gas", () => {
-              expect(gasUsed.toString()).to.eq("92397");
+            it("uses 92419 gas", () => {
+              expect(gasUsed.toString()).to.eq("92419");
             });
 
             it("increases the contract's balance by 2 ETH", async () => {
@@ -457,8 +453,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                 );
               });
 
-              it("uses 50402 gas", () => {
-                expect(gasUsed.toString()).to.eq("50402");
+              it("uses 50424 gas", () => {
+                expect(gasUsed.toString()).to.eq("50424");
               });
 
               it("emits a Transfer and Withdrawal event", async () => {
@@ -506,8 +502,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                   gasPrice = tx.gasPrice;
                 });
 
-                it("uses 58185 gas", () => {
-                  expect(gasUsed.toString()).to.eq("58185");
+                it("uses 58207 gas", () => {
+                  expect(gasUsed.toString()).to.eq("58207");
                 });
 
                 it("increases the contract's balance by 3.3 ETH", async () => {
@@ -666,8 +662,8 @@ describe("Crowdfund via Proxy from Factory", () => {
                     );
                   });
 
-                  it("uses 50402 gas", () => {
-                    expect(gasUsed.toString()).to.eq("50402");
+                  it("uses 50424 gas", () => {
+                    expect(gasUsed.toString()).to.eq("50424");
                   });
 
                   it("emits a Transfer and Withdrawal event", async () => {
@@ -699,14 +695,14 @@ describe("Crowdfund via Proxy from Factory", () => {
                   });
 
                   describe("when the operator closes funding", () => {
-                    let originalCreatorBalance;
+                    let originalFundsRecipientBalance;
                     let originalContractBalance;
                     let tx;
                     let ethUsedForTX;
 
                     beforeEach(async () => {
-                      originalCreatorBalance = await provider.getBalance(
-                        creatorWallet.address
+                      originalFundsRecipientBalance = await provider.getBalance(
+                        fundingRecipient.address
                       );
                       originalContractBalance = await provider.getBalance(
                         callableProxy.address
@@ -739,15 +735,15 @@ describe("Crowdfund via Proxy from Factory", () => {
                       expect(updatedContractBalance.toString()).to.eq("0");
                     });
 
-                    it("transfers the ETH to the operator, minus gas", async () => {
-                      const updatedCreatorBalance = await provider.getBalance(
-                        creatorWallet.address
+                    it("transfers the ETH to the funds recipient", async () => {
+                      const updatedRecipientBalance = await provider.getBalance(
+                        fundingRecipient.address
                       );
-                      const expectedBalance = originalCreatorBalance
-                        .sub(ethUsedForTX)
-                        .add(originalContractBalance);
+                      const expectedBalance = originalFundsRecipientBalance.add(
+                        originalContractBalance
+                      );
 
-                      expect(updatedCreatorBalance.toString()).to.eq(
+                      expect(updatedRecipientBalance.toString()).to.eq(
                         expectedBalance.toString()
                       );
                     });
@@ -862,8 +858,8 @@ describe("Crowdfund via Proxy from Factory", () => {
               );
             });
 
-            it("uses 101846 gas", () => {
-              expect(receipt.gasUsed.toString()).to.eq("101846");
+            it("uses 101868 gas", () => {
+              expect(receipt.gasUsed.toString()).to.eq("101868");
             });
 
             describe("when a contributor adds ETH once the funding cap is already reached", () => {

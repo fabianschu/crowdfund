@@ -153,8 +153,8 @@ contract CrowdfundLogic is CrowdfundStorage {
         _mint(operator, operatorTokens);
         // Announce that funding has been closed.
         emit FundingClosed(address(this).balance, operatorTokens);
-        // Transfer all funds to the operator.
-        sendValue(operator, address(this).balance);
+        // Transfer all funds to the fundingRecipient.
+        sendValue(fundingRecipient, address(this).balance);
     }
 
     // ============ Utility Methods ============

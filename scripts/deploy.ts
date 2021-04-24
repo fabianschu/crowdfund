@@ -1,69 +1,51 @@
-// import { ethers, waffle } from "hardhat";
-// import fs from "fs";
+import { ethers, waffle } from "hardhat";
+import fs from "fs";
 
-// const config = {
-//   mainnet: {
-//     WETH_ADDRESS: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-//   },
-//   rinkeby: {
-//     WETH_ADDRESS: "0xc778417e063141139fce010982780140aa0cd5ab",
-//   },
-//   hardhat: {
-//     // Note: This won't integrate, but will allow us to test deploys.
-//     WETH_ADDRESS: "0xc778417e063141139fce010982780140aa0cd5ab",
-//   },
-// };
+const NETWORK_MAP = {
+  "1": "mainnet",
+  "4": "rinkeby",
+  "1337": "hardhat",
+  "31337": "hardhat",
+};
 
-// const NETWORK_MAP = {
-//   "1": "mainnet",
-//   "4": "rinkeby",
-//   "1337": "hardhat",
-//   "31337": "hardhat",
-// };
+let isLocal = false;
 
-// let isLocal = false;
+async function main() {
+  const chainId = (await waffle.provider.getNetwork()).chainId;
 
-// async function main() {
-//   const chainId = (await waffle.provider.getNetwork()).chainId;
+  console.log({ chainId });
+  const networkName = NETWORK_MAP[chainId];
 
-//   console.log({chainId})
-//   const networkName = NETWORK_MAP[chainId];
+  console.log(`Deploying to ${networkName}`);
 
-//   console.log(`Deploying to ${networkName}`);
+  const Logic = await ethers.getContractFactory("CrowdfundLogic");
+  const logic = await Logic.deploy();
+  await logic.deployed();
 
-//   const { WETH_ADDRESS } = config[networkName];
+  const Factory = await ethers.getContractFactory("CrowdfundFactory");
+  const factory = await Factory.deploy(logic.address);
+  await factory.deployed();
 
-//   const Splitter = await ethers.getContractFactory("Splitter");
-//   const splitter = await Splitter.deploy();
-//   await splitter.deployed();
+  const info = {
+    Contracts: {
+      logic: logic.address,
+      factory: factory.address,
+    },
+  };
 
-//   const SplitFactory = await ethers.getContractFactory("SplitFactory");
-//   const splitFactory = await SplitFactory.deploy(
-//     splitter.address,
-//     WETH_ADDRESS
-//   );
-//   await splitFactory.deployed();
+  console.log(info);
 
-//   const info = {
-//     Contracts: {
-//       Splitter: splitter.address,
-//       SplitFactory: splitFactory.address,
-//     },
-//   };
+  if (!isLocal) {
+    fs.writeFileSync(
+      `${__dirname}/../networks/${networkName}.json`,
+      JSON.stringify(info, null, 2)
+    );
+  }
+}
 
-//   console.log(info);
-
-//   if (!isLocal) {
-//     fs.writeFileSync(
-//       `${__dirname}/../networks/${networkName}.json`,
-//       JSON.stringify(info, null, 2)
-//     );
-//   }
-// }
-
-// main()
-//   .then(() => process.exit(0))
-//   .catch((error) => {
-//     console.error(error);
-//     process.exit(1);
-//   });
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

@@ -25,6 +25,7 @@ interface CrowdfundStorageInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "fundingCap()": FunctionFragment;
+    "fundingRecipient()": FunctionFragment;
     "logic()": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -43,6 +44,10 @@ interface CrowdfundStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "fundingCap",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fundingRecipient",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
@@ -64,6 +69,10 @@ interface CrowdfundStorageInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "fundingCap", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "fundingRecipient",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
@@ -122,6 +131,10 @@ export class CrowdfundStorage extends Contract {
     fundingCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "fundingCap()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    fundingRecipient(overrides?: CallOverrides): Promise<[string]>;
+
+    "fundingRecipient()"(overrides?: CallOverrides): Promise<[string]>;
 
     logic(overrides?: CallOverrides): Promise<[string]>;
 
@@ -186,6 +199,10 @@ export class CrowdfundStorage extends Contract {
 
   "fundingCap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  fundingRecipient(overrides?: CallOverrides): Promise<string>;
+
+  "fundingRecipient()"(overrides?: CallOverrides): Promise<string>;
+
   logic(overrides?: CallOverrides): Promise<string>;
 
   "logic()"(overrides?: CallOverrides): Promise<string>;
@@ -248,6 +265,10 @@ export class CrowdfundStorage extends Contract {
     fundingCap(overrides?: CallOverrides): Promise<BigNumber>;
 
     "fundingCap()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fundingRecipient(overrides?: CallOverrides): Promise<string>;
+
+    "fundingRecipient()"(overrides?: CallOverrides): Promise<string>;
 
     logic(overrides?: CallOverrides): Promise<string>;
 
@@ -315,6 +336,10 @@ export class CrowdfundStorage extends Contract {
 
     "fundingCap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    fundingRecipient(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "fundingRecipient()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     logic(overrides?: CallOverrides): Promise<BigNumber>;
 
     "logic()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -381,6 +406,12 @@ export class CrowdfundStorage extends Contract {
     fundingCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "fundingCap()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fundingRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "fundingRecipient()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     logic(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

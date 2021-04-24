@@ -22,14 +22,14 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface CrowdfundFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "createCrowdfund(string,string,address,uint256,uint256)": FunctionFragment;
+    "createCrowdfund(string,string,address,address,uint256,uint256)": FunctionFragment;
     "logic()": FunctionFragment;
     "parameters()": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "createCrowdfund",
-    values: [string, string, string, BigNumberish, BigNumberish]
+    values: [string, string, string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
   encodeFunctionData(
@@ -69,15 +69,17 @@ export class CrowdfundFactory extends Contract {
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createCrowdfund(string,string,address,uint256,uint256)"(
+    "createCrowdfund(string,string,address,address,uint256,uint256)"(
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: Overrides
@@ -90,8 +92,9 @@ export class CrowdfundFactory extends Contract {
     parameters(
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, string, string] & {
+      [string, string, BigNumber, BigNumber, string, string] & {
         operator: string;
+        fundingRecipient: string;
         fundingCap: BigNumber;
         operatorPercent: BigNumber;
         name: string;
@@ -102,8 +105,9 @@ export class CrowdfundFactory extends Contract {
     "parameters()"(
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, string, string] & {
+      [string, string, BigNumber, BigNumber, string, string] & {
         operator: string;
+        fundingRecipient: string;
         fundingCap: BigNumber;
         operatorPercent: BigNumber;
         name: string;
@@ -116,15 +120,17 @@ export class CrowdfundFactory extends Contract {
     name_: string,
     symbol_: string,
     operator_: string,
+    fundingRecipient_: string,
     fundingCap_: BigNumberish,
     operatorPercent_: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createCrowdfund(string,string,address,uint256,uint256)"(
+  "createCrowdfund(string,string,address,address,uint256,uint256)"(
     name_: string,
     symbol_: string,
     operator_: string,
+    fundingRecipient_: string,
     fundingCap_: BigNumberish,
     operatorPercent_: BigNumberish,
     overrides?: Overrides
@@ -137,8 +143,9 @@ export class CrowdfundFactory extends Contract {
   parameters(
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber, string, string] & {
+    [string, string, BigNumber, BigNumber, string, string] & {
       operator: string;
+      fundingRecipient: string;
       fundingCap: BigNumber;
       operatorPercent: BigNumber;
       name: string;
@@ -149,8 +156,9 @@ export class CrowdfundFactory extends Contract {
   "parameters()"(
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber, string, string] & {
+    [string, string, BigNumber, BigNumber, string, string] & {
       operator: string;
+      fundingRecipient: string;
       fundingCap: BigNumber;
       operatorPercent: BigNumber;
       name: string;
@@ -163,15 +171,17 @@ export class CrowdfundFactory extends Contract {
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createCrowdfund(string,string,address,uint256,uint256)"(
+    "createCrowdfund(string,string,address,address,uint256,uint256)"(
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: CallOverrides
@@ -184,8 +194,9 @@ export class CrowdfundFactory extends Contract {
     parameters(
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, string, string] & {
+      [string, string, BigNumber, BigNumber, string, string] & {
         operator: string;
+        fundingRecipient: string;
         fundingCap: BigNumber;
         operatorPercent: BigNumber;
         name: string;
@@ -196,8 +207,9 @@ export class CrowdfundFactory extends Contract {
     "parameters()"(
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, string, string] & {
+      [string, string, BigNumber, BigNumber, string, string] & {
         operator: string;
+        fundingRecipient: string;
         fundingCap: BigNumber;
         operatorPercent: BigNumber;
         name: string;
@@ -220,15 +232,17 @@ export class CrowdfundFactory extends Contract {
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createCrowdfund(string,string,address,uint256,uint256)"(
+    "createCrowdfund(string,string,address,address,uint256,uint256)"(
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: Overrides
@@ -248,15 +262,17 @@ export class CrowdfundFactory extends Contract {
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createCrowdfund(string,string,address,uint256,uint256)"(
+    "createCrowdfund(string,string,address,address,uint256,uint256)"(
       name_: string,
       symbol_: string,
       operator_: string,
+      fundingRecipient_: string,
       fundingCap_: BigNumberish,
       operatorPercent_: BigNumberish,
       overrides?: Overrides

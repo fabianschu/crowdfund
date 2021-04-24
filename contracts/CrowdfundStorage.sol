@@ -39,8 +39,9 @@ contract CrowdfundStorage {
 
     // ============ Immutable Storage ============
 
-    // The operator has a special role to control NFT sale and change contract status.
+    // The operator has a special role to change contract status.
     address payable public operator;
+    address payable public fundingRecipient;
     // We add a hard cap to prevent raising more funds than deemed reasonable.
     uint256 public fundingCap;
     // The operator takes some equity in the tokens, represented by this percent.

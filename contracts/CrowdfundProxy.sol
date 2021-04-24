@@ -13,6 +13,7 @@ interface ICrowdfundFactory {
         external
         returns (
             address payable operator,
+            address payable fundingRecipient,
             uint256 fundingCap,
             uint256 operatorPercent,
             string memory name,
@@ -30,6 +31,7 @@ contract CrowdfundProxy is CrowdfundStorage {
         // Crowdfund-specific data.
         (
             operator,
+            fundingRecipient,
             fundingCap,
             operatorPercent,
             name,
