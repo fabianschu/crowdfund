@@ -25,7 +25,6 @@ interface ICrowdfundFactoryInterface extends ethers.utils.Interface {
     "logic()": FunctionFragment;
     "mediaAddress()": FunctionFragment;
     "parameters()": FunctionFragment;
-    "wethAddress()": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
@@ -37,10 +36,6 @@ interface ICrowdfundFactoryInterface extends ethers.utils.Interface {
     functionFragment: "parameters",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "wethAddress",
-    values?: undefined
-  ): string;
 
   decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
   decodeFunctionResult(
@@ -48,10 +43,6 @@ interface ICrowdfundFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "parameters", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "wethAddress",
-    data: BytesLike
-  ): Result;
 
   events: {};
 }
@@ -81,10 +72,6 @@ export class ICrowdfundFactory extends Contract {
     parameters(overrides?: Overrides): Promise<ContractTransaction>;
 
     "parameters()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    wethAddress(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "wethAddress()"(overrides?: Overrides): Promise<ContractTransaction>;
   };
 
   logic(overrides?: Overrides): Promise<ContractTransaction>;
@@ -99,10 +86,6 @@ export class ICrowdfundFactory extends Contract {
 
   "parameters()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  wethAddress(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "wethAddress()"(overrides?: Overrides): Promise<ContractTransaction>;
-
   callStatic: {
     logic(overrides?: CallOverrides): Promise<string>;
 
@@ -115,8 +98,9 @@ export class ICrowdfundFactory extends Contract {
     parameters(
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, string, string] & {
+      [string, string, BigNumber, BigNumber, string, string] & {
         operator: string;
+        fundingRecipient: string;
         fundingCap: BigNumber;
         operatorPercent: BigNumber;
         name: string;
@@ -127,18 +111,15 @@ export class ICrowdfundFactory extends Contract {
     "parameters()"(
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, string, string] & {
+      [string, string, BigNumber, BigNumber, string, string] & {
         operator: string;
+        fundingRecipient: string;
         fundingCap: BigNumber;
         operatorPercent: BigNumber;
         name: string;
         symbol: string;
       }
     >;
-
-    wethAddress(overrides?: CallOverrides): Promise<string>;
-
-    "wethAddress()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -155,10 +136,6 @@ export class ICrowdfundFactory extends Contract {
     parameters(overrides?: Overrides): Promise<BigNumber>;
 
     "parameters()"(overrides?: Overrides): Promise<BigNumber>;
-
-    wethAddress(overrides?: Overrides): Promise<BigNumber>;
-
-    "wethAddress()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -173,9 +150,5 @@ export class ICrowdfundFactory extends Contract {
     parameters(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "parameters()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    wethAddress(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "wethAddress()"(overrides?: Overrides): Promise<PopulatedTransaction>;
   };
 }

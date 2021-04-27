@@ -1,25 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity 0.8.4;
 
-interface ICrowdfundFactory {
-    function mediaAddress() external returns (address);
-
-    function wethAddress() external returns (address);
-
-    function logic() external returns (address);
-
-    // ERC20 data.
-    function parameters()
-        external
-        returns (
-            address payable operator,
-            uint256 fundingCap,
-            uint256 operatorPercent,
-            string memory name,
-            string memory symbol
-        );
-}
-
 /**
  * @title CrowdfundProxy
  * @author MirrorXYZ

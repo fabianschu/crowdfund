@@ -6,7 +6,6 @@ export type { CrowdfundLogic } from "./CrowdfundLogic";
 export type { CrowdfundProxy } from "./CrowdfundProxy";
 export type { ICrowdfundFactory } from "./ICrowdfundFactory";
 export type { CrowdfundStorage } from "./CrowdfundStorage";
-export type { ICrowdfundFactory } from "./ICrowdfundFactory";
 export type { WETH } from "./WETH";
 
 export { CrowdfundFactory__factory } from "./factories/CrowdfundFactory__factory";
@@ -14,5 +13,4 @@ export { CrowdfundLogic__factory } from "./factories/CrowdfundLogic__factory";
 export { CrowdfundProxy__factory } from "./factories/CrowdfundProxy__factory";
 export { ICrowdfundFactory__factory } from "./factories/ICrowdfundFactory__factory";
 export { CrowdfundStorage__factory } from "./factories/CrowdfundStorage__factory";
-export { ICrowdfundFactory__factory } from "./factories/ICrowdfundFactory__factory";
 export { WETH__factory } from "./factories/WETH__factory";

@@ -53,6 +53,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "address payable",
+        name: "fundingRecipient",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "fundingCap",
         type: "uint256",
@@ -71,19 +76,6 @@ const _abi = [
         internalType: "string",
         name: "symbol",
         type: "string",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "wethAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
       },
     ],
     stateMutability: "nonpayable",
