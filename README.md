@@ -1,15 +1,9 @@
-# Mirror $WRITE Token
+# Crowdfund
 
-> Mirror is the next big change in the long history of symbolic communication. Through a decentralized, user-owned, crypto-based network, Mirror’s publishing platform revolutionizes the way we express, share and monetize our thoughts.
+Mirror Crowdfund contracts.
 
+Please send feedback to g@mirror.xyz
 
-## Summary
-
-Includes contracts pertaining to Mirror onboarding.
-
-## Contract Deployment Addresses and Verified Source Code
-
-
-* [Write Token ERC20 Contract](https://etherscan.io/address/0x622236bb180256b6ae1a935dae08dc0356141632#code)
-
-* [Mirror ENS Registrar](https://etherscan.io/address/0x0b53D523912593C18dD7C22AFd2c448BB48e1bf8#code)
+## Bug Bounty
+* 10 ETH for any critical bugs that could result in loss of funds.
+* Rewards will be given for smaller bugs or ideas.
