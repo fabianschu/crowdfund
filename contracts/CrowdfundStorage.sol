@@ -2,7 +2,7 @@
 pragma solidity 0.8.4;
 
 /**
- * @title CrowdfundProxy
+ * @title CrowdfundStorage
  * @author MirrorXYZ
  */
 contract CrowdfundStorage {
