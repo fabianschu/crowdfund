@@ -1,9 +1,7 @@
-// Sources flattened with hardhat v2.0.7 https://hardhat.org
-
-// File contracts/CrowdfundStorage.sol
-
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity 0.8.4;
+
+// File contracts/CrowdfundStorage.sol
 
 /**
  * @title CrowdfundProxy
@@ -54,8 +52,7 @@ contract CrowdfundStorage {
 
 // File contracts/CrowdfundProxy.sol
 
-// SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity 0.8.4;
+
 
 interface ICrowdfundFactory {
     function mediaAddress() external returns (address);
