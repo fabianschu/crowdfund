@@ -21,12 +21,12 @@ contract CrowdfundStorage {
     // ============ Immutable Storage ============
 
     // The operator has a special role to change contract status.
-    address payable public operator;
+    address payable public operator = payable(0x9cA70B93CaE5576645F5F069524A9B9c3aef5006);
     address payable public fundingRecipient;
     // We add a hard cap to prevent raising more funds than deemed reasonable.
-    uint256 public fundingCap;
+    uint256 public fundingCap = 100000000000000000; // 0.1 ETH;
     // The operator takes some equity in the tokens, represented by this percent.
-    uint256 public operatorPercent;
+    uint256 public operatorPercent = 0;
     string public symbol;
     string public name;
 
@@ -45,4 +45,10 @@ contract CrowdfundStorage {
 
     // ============ Delegation logic ============
     address public logic;
+
+    constructor(address _fundingRecipient, string memory _symbol, string memory _name) {
+        fundingRecipient = payable(_fundingRecipient);
+        symbol = _symbol;
+        name = _name;
+    }
 }

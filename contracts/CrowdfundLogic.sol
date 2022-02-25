@@ -51,6 +51,8 @@ contract CrowdfundLogic is CrowdfundStorage {
         reentrancy_status = REENTRANCY_NOT_ENTERED;
     }
 
+    constructor(address _fundingRecipient, string memory _symbol, string memory _name) CrowdfundStorage(_fundingRecipient, _symbol, _name) {}
+
     // ============ Crowdfunding Methods ============
 
     /**
